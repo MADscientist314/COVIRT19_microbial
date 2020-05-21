@@ -1,0 +1,364 @@
+---
+title: "COVID"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+summary(county_df$mortality.rate)
+total_death <- sum(county_df$Death) / sum(county_df$Confirmed) * 100
+print(total_death)
+
+
+
+us_dates <- as.Date(usc$date, format = "%Y-%m-%d")
+us_dates <- unique(us_dates)
+length(us_dates)
+us_dates
+us_date <- data.frame(date = us_dates[order(us_dates)])
+head(us_date)
+#usc_wide <- us_df
+usc$date <- as.Date(usc$date, format = "%Y-%m-%d")
+head(usc)
+us_df <- usc[usc$county == county[1], ]
+us_df <- us_df[-(1:nrow(us_df)), ]
+
+n = 1
+for (f in fips) {
+  us_date <- data.frame(date = us_dates[order(us_dates)])
+  tmp <- as.data.frame(subset(usc, usc$fips == f))
+  tmp1 <- merge(us_date, tmp, by = 'date', all.x = TRUE, sort = FALSE)
+  tmp1$fips[is.na(tmp1$fips)] <- f
+  tmp1$county[is.na(tmp1$county)] <- tmp$county[1]
+  tmp1$state[is.na(tmp1$state)] <- tmp$state[1]
+  us_df <- rbind(us_df, tmp1)
+  print(n)
+  n=n+1
+  rm(us_date)
+}
+
+dim(us_df)
+head(us_df)
+us_df$cases[is.na(us_df$cases)] <- 0
+us_df$deaths[is.na(us_df$deaths)] <- 0
+dim(us_df)
+length(which(is.na(us_df$fips)))
+
+
+head(county_df)
+length(which(county_df$Confirmed > 10000))
+usc_top10000 <- which(county_df$Confirmed > 10000)
+county_top10000 <- county_df$Fips[usc_top10000]
+county_top10000
+
+us_df_f <- subset(us_df, us_df$fips %in% county_top10000)
+dim(us_df_f)
+head(us_df_f)
+
+us_df_f$cumulative.cases <- NA
+us_df_f$cumulative.death <- NA
+for (c in unique(us_df_f$county)) {
+  us_df_f$cumulative.cases[us_df_f$county == c] <- cumsum(us_df_f$cases[us_df_f$county == c])
+  us_df_f$cumulative.death[us_df_f$county == c] <- cumsum(us_df_f$deaths[us_df_f$county == c])
+}
+
+head(us_df_f)
+us_df_f$seq <- NA
+for (c in unique(us_df_f$county)) {
+  s <- which(us_df_f$cumulative.cases[us_df_f$county == c] >= 100)[1]
+  us_df_f$seq[us_df_f$county == c] <- s
+}
+head(us_df_f)
+us_df_f <- us_df_f[order(us_df_f$seq), ]
+head(us_df_f)
+dim(us_df_f)
+us_df_f <- us_df_f[, -9]
+us_df_f$mortality.rate <- us_df_f$cumulative.death / us_df_f$cumulative.cases * 100
+head(us_df_f)
+save(us_df_f, file = 'US_county_over_10000_covid19.RData')
+
+## HEATMAP ##
+
+load('./US/US_county_over_10000_covid19.RData')
+
+mypal <-colorRampPalette(c("white", "navy","firebrick4"))(299)
+head(us_df_f)
+tail(us_df_f)
+county_code <- unique(us_df_f$fips)
+
+n = 1
+for (c in unique(us_df_f$fips)) {
+  tmp_us <- us_df_f[us_df_f$fips == c, ]
+  #tmp_us$mortality.rate[tmp_cov$Cumulative.Confirmed < 100] <- 0
+  print(dim(tmp_us))
+  hm_us <- tmp_us[, c(6,5)]
+  hm_us[is.na(hm_us)] <- 0
+  mr <- tmp_us$mortality.rate
+  
+  #ha = HeatmapAnnotation(MR = anno_barplot(mr, ylim = c(0,5),bar_width = 1, gp = gpar(fill = 'hotpink', col = 'hotpink')), annotation_name_side = "left")
+  if (n == 1) {
+    hm_t <- Heatmap(t(hm_us), cluster_columns = FALSE, cluster_rows = FALSE, col = mypal, show_row_names = FALSE, show_column_names = FALSE, name = 'Number', left_annotation = rowAnnotation(mr = anno_block(gp = gpar(fill = 'gray87', col = 'white'), labels = county_code[n], labels_gp = gpar(col = "black", fontsize = 6)))) #, top_annotation = ha
+    assign(paste('hm_t', n, sep = ''), hm_t)
+  }
+  else {
+    hm_t <- Heatmap(t(hm_us), cluster_columns = FALSE, cluster_rows = FALSE, col = mypal, show_row_names = FALSE, show_column_names = FALSE, show_heatmap_legend = FALSE, left_annotation = rowAnnotation(mr = anno_block(gp = gpar(fill = 'gray87', col = 'white'), labels = county_code[n], labels_gp = gpar(col = "black", fontsize = 6)))) #, top_annotation = ha
+    assign(paste('hm_t', n, sep = ''), hm_t)
+  }
+  n = n+1
+}
+
+
+ht_list <- hm_t1 %v% hm_t2 %v% hm_t3 %v% hm_t4 %v% hm_t5 %v% hm_t6 %v% hm_t7 %v% hm_t8 %v% hm_t9 %v% hm_t10 %v% hm_t11 %v%  hm_t12 %v%  hm_t13 %v%  hm_t14 %v%  hm_t15 %v%  hm_t16 %v%  hm_t17 %v% hm_t18 %v% hm_t19 %v% hm_t20 %v% hm_t21 %v% hm_t22 %v% hm_t23 %v% hm_t24 %v% hm_t25 %v% hm_t26 %v% hm_t27 %v% hm_t28 %v% hm_t29 %v% hm_t30 %v% hm_t31 %v% hm_t32 %v% hm_t33 %v% hm_t34 %v% hm_t35 %v% hm_t36 %v% hm_t37 %v% hm_t38 %v% hm_t39 %v% hm_t40 %v% hm_t41 %v% hm_t42 %v% hm_t43 %v% hm_t44 %v% hm_t45 %v% hm_t46 %v% hm_t47 %v% hm_t48 %v% hm_t49 %v% hm_t50 %v% hm_t51 %v% hm_t52 %v% hm_t53
+
+#draw(ht_list,  ht_gap = unit(0, "cm"))
+
+png('US_HeatMap.png', width = 12, height = 16, units = 'in', res = 300)
+draw(ht_list,  ht_gap = unit(0, "cm"))
+dev.off()
+
+png('US_HeatMap_1.png', width = 12, height = 16, units = 'in', res = 300)
+draw(ht_list,  ht_gap = unit(0, "cm"))
+dev.off()
+
+```{r Read county data}
+require('ggplot2')
+require('nlme')
+library("rjson")
+
+usc <- read.csv(url("https://github.com/nytimes/covid-19-data/raw/master/us-counties.csv"))
+us_density <- read.csv(url("https://github.com/camillol/cs424p3/raw/master/data/Population-Density%20By%20County.csv"))
+nextstrain <- read.delim("nextstrain_patient_data.tsv",sep='\t')
+nextstrain = nextstrain[nextstrain$country == 'USA',]
+nextstrain$gender = nextstrain$sex
+nextstrain$gender = NA
+nextstrain[(nextstrain$sex=="Male" & !is.na(nextstrain$sex)),"gender"] = 1
+nextstrain[(nextstrain$sex=="Female" & !is.na(nextstrain$sex)),"gender"] = 0
+
+
+
+#raw_data <- fromJSON(file="ncov_global.json") # I had to save it first. Cannot read directly
+#virus_data <- as.data.frame(raw_data$meta)
+
+# fix New York City county, does not have fips
+usc[usc$county == "New York City","fips"] = 36061
+
+length(unique(usc$county))
+length(unique(usc$fips))
+
+fips <- unique(usc$fips)
+fips[c(1:5)]
+fips <- na.omit(fips)
+
+head(usc)
+
+fips_l <- list()
+county_l <- list()
+state_l <- list()
+cases_l <- list()
+death_l <- list()
+density_l <- list() #SVC
+doubling_l <- list() #SVC
+divergence_l <- list() #SVC
+entropy_l <- list()
+
+for (f in fips) {
+  tmp <- as.data.frame(subset(usc, usc$fips == f))
+  c <- tmp$county[1]
+  st <- tmp$state[1]
+  s <- sum(tmp$cases)
+  d <- sum(tmp$deaths)
+  y_death = tmp[tmp$deaths>4,'deaths']
+  if (length(y_death)>9) {
+    y_death = y_death[1:8]
+    x_days = 1:8
+    fits <- tryCatch(nls(y_death ~ c*exp(x_days/t), start =c(t=2,c=6)),error = function(e) NA)
+    if (is.na(fits)) {doubling = NA
+    } else {doubling = as.double(coef(fits)[1])*log(2)}
+  } else {
+    doubling = NA
+  }
+  den <- us_density[us_density[,5]==f,]$Density.per.square.mile.of.land.area #SVC
+  if (length(den)==0) { den=NA} #SVC
+  county_l[[paste(f)]] <- c
+  state_l[[paste0(f)]] <- st
+  fips_l[[paste0(f)]] <- f
+  cases_l[[paste0(f)]] <- s
+  death_l[[paste0(f)]] <- d
+  density_l[[paste0(f)]] <- den #SVC
+  doubling_l[[paste0(f)]] <- doubling #SVC
+}
+
+county_df <- data.frame(County = unlist(county_l),
+                        State = unlist(state_l),
+                        Fips = unlist(fips_l),
+                        Confirmed = unlist(cases_l),
+                        Death = unlist(death_l),
+                        Density = unlist(density_l),
+                        Doubling = unlist(doubling_l)) #SVC
+
+county_df <- county_df[order(county_df$Confirmed, decreasing = TRUE),]
+county_df$mortality.rate <- county_df$Death / county_df$Confirmed * 100
+head(county_df)
+state_avg = aggregate(county_df[,c(4,5,6,7,8)],list(county_df$State),mean,na.rm=TRUE)
+tmp = aggregate(nextstrain[,c(9,10,13)],list(nextstrain$division),mean,na.rm=TRUE)
+state_avg = merge(state_avg,tmp,by="Group.1")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=TRUE}
+p <- ggplot(county_df[county_df$Death>10,], aes(x=Density, y=mortality.rate, color=State)) +
+  geom_point() +
+  scale_x_continuous(trans='log10')+
+  scale_y_continuous(trans="log10") +
+  xlab('Density (people/square mile)') +
+  ylab('Mortality rate')
+print(p)
+
+p <- ggplot(county_df[county_df$Death>10,], aes(x=Density, y=Confirmed, color=State)) +
+  geom_point() +
+  scale_x_continuous(trans='log10')+
+  scale_y_continuous(trans="log10") +
+  xlab('Density (people/square mile)') +
+  ylab('Confirmed Cases')
+print(p)
+
+p <- ggplot(county_df[county_df$Death>10,], aes(x=Density, y=Death, color=State)) +
+  geom_point() +
+  scale_x_continuous(trans='log10')+
+  scale_y_continuous(trans="log10") +
+  xlab('Density (people/square mile)') +
+  ylab('Total Death')
+print(p)
+
+p <- ggplot(county_df[county_df$Death>10,], aes(x=Density, y=Doubling, color=State)) +
+  geom_point() +
+#  geom_boxplot()
+  #scale_y_continuous(trans="log10") +
+  xlab('Density (people/square mile)') +
+  ylab('Doubling (days)')
+print(p)
+
+p <- ggplot(county_df[county_df$Death>10,], aes(x=mortality.rate, y=Doubling, color=State)) +
+  geom_point() +
+#  geom_boxplot()
+  #scale_y_continuous(trans="log10") +
+  xlab('Mortality Rate') +
+  ylab('Doubling (days)') + 
+  xlim(0,10)
+print(p)
+
+p <- ggplot(state_avg, aes(x=div, y=mortality.rate, color=Group.1)) +
+  geom_point() +
+#  geom_boxplot()
+  #scale_y_continuous(trans="log10") +
+  ylab('Mortality Rate') +
+  xlab('Divergence') 
+print(p)
+
+p <- ggplot(state_avg, aes(x=div, y=Doubling, color=Group.1)) +
+  geom_point() +
+#  geom_boxplot()
+  #scale_y_continuous(trans="log10") +
+  ylab('Doubling') +
+  xlab('Divergence') 
+print(p)
+
+# identify abnormal counties
+abnormal_county = county_df$Density<1200 & county_df$Doubling<3.5
+ab_county = county_df[abnormal_county,]
+ab_county = ab_county[!is.na(ab_county$Death),]
+ab_county
+abnormal_county = county_df$Density>9000 #& county_df$Doubling>10
+ab_county = county_df[abnormal_county,]
+ab_county = ab_county[!is.na(ab_county$Death),]
+ab_county
+
+```
+####---- US Flu data / State ----#####
+```{r}
+days <-c(1:13) * 7
+weekdays <- c(day1, day1 + days)
+weekdays
+class(usc$date)
+head(usc)
+usc$DATE <- as.Date(usc$date, format = '%Y-%m-%d')
+uscDates <- unique(usc$DATE)
+head(usc)
+
+for (i in 1:length(uscDates)) {
+  test <- TRUE
+  dt <- as.Date(uscDates[i], format = '%Y-%m-%d')
+  idx = 1
+  while (test == TRUE) {
+    if (dt < weekdays[idx]) {
+      test = FALSE
+      usc$DATE[usc$DATE == dt] <- weekdays[idx-1]
+    } else if (idx >= 14) {
+      usc$DATE[usc$DATE == dt] <- weekdays[idx]
+      test = FALSE
+    }
+    idx = idx + 1
+  }
+}
+table(usc$DATE)
+head(usc)
+
+df_covid_week <- data.frame(State = character(),
+                            Cases = integer(),
+                            Deaths = integer(),
+                            Week = as.Date(character()))
+
+states <- unique(usc$state)
+states <- na.omit(states)
+for (s in states) {
+  tmp1 <- as.data.frame(usc[usc$state == s, ])
+  df_tmp <- data.frame(State = character(),
+                       Cases = numeric(),
+                       Deaths = numeric(),
+                       Week = as.Date(character()))
+  for (w in 1:length(weekdays)) {
+    wd <- as.Date(weekdays[w], format = '%Y-%m-%d')
+    tmp2 <- as.data.frame(tmp1[tmp1$DATE == wd, ])
+    cases <- max(tmp2$cases)
+    death <- max(tmp2$deaths)
+    tmp_df <- data.frame(State = tmp2$state[1],
+                         Cases = cases,
+                         Deaths = death,
+                         Week = wd)
+    df_tmp <- rbind(df_tmp, tmp_df)
+  }
+  df_covid_week <- rbind(df_covid_week, df_tmp)
+}
+
+head(df_covid_week)
+
+plot(df_covid_week$Cases ~ df_covid_week$Week, pch=19, cex=.5)
+
+nys <- subset(df_covid_week, df_covid_week$State == 'New York')
+nys
+table(usFlu$SUB.AREA)
+
+usFlu_19_20 <- usFlu[usFlu$SEASON == '2019-20', ]
+usFlu_19_20 <- usFlu_19_20[usFlu_19_20$WEEK < 15,]
+usFlu_19_20 <- usFlu_19_20[order(usFlu_19_20$SUB.AREA, usFlu_19_20$WEEK), ]
+
+head(usFlu_19_20)
+day1 <- as.Date('2020-01-01')
+table(usFlu_19_20$WEEK)
+days <-c(1:12) * 7
+weekdays <- c(day1, day1 + days)
+weekdays
+usFlu_19_20$weekDay <- rep(weekdays, 52)
+head(usFlu_19_20)
+save(usFlu_19_20, file = 'US_Flu_report_2019-20.RData')
+
+## Group COVID date into weeks
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

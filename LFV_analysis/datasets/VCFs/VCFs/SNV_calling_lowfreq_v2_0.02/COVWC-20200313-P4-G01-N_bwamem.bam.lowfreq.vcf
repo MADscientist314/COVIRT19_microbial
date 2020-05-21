@@ -1,0 +1,30 @@
+##fileformat=VCFv4.0
+##fileDate=20200423
+##source=lofreq call -f ../../todd/reference.fasta -o COVWC-20200313-P4-G01-N_bwamem.bam.lowfreq.vcf --min-mq 10 COVWC-20200313-P4-G01-N_bwamem.bam 
+##reference=../../todd/reference.fasta
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw Depth">
+##INFO=<ID=AF,Number=1,Type=Float,Description="Allele Frequency">
+##INFO=<ID=SB,Number=1,Type=Integer,Description="Phred-scaled strand bias at this position">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=CONSVAR,Number=0,Type=Flag,Description="Indicates that the variant is a consensus variant (as opposed to a low frequency variant).">
+##INFO=<ID=HRUN,Number=1,Type=Integer,Description="Homopolymer length to the right of report indel position">
+##FILTER=<ID=min_dp_10,Description="Minimum Coverage 10">
+##FILTER=<ID=sb_fdr,Description="Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000">
+##FILTER=<ID=min_snvqual_60,Description="Minimum SNV Quality (Phred) 60">
+##FILTER=<ID=min_indelqual_20,Description="Minimum Indel Quality (Phred) 20">
+##FILTER=<ID=min_af_0.020000,Description="Minimum allele frequency 0.020000">
+##FILTER=<ID=min_dp_10,Description="Minimum Coverage 10">
+##FILTER=<ID=sb_fdr,Description="Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NC_045512.2	241	.	C	T	489	PASS	DP=25;AF=0.640000;SB=1;DP4=4,4,6,10
+NC_045512.2	1059	.	C	T	772	PASS	DP=37;AF=0.675676;SB=5;DP4=3,9,11,14
+NC_045512.2	3037	.	C	T	716	PASS	DP=33;AF=0.727273;SB=0;DP4=4,4,13,11
+NC_045512.2	7735	.	C	T	248	PASS	DP=34;AF=0.294118;SB=0;DP4=14,10,6,4
+NC_045512.2	14408	.	C	T	223	PASS	DP=23;AF=0.347826;SB=4;DP4=7,8,6,2
+NC_045512.2	19065	.	T	C	336	PASS	DP=54;AF=0.240741;SB=1;DP4=19,22,7,6
+NC_045512.2	20755	.	A	C	347	PASS	DP=30;AF=0.400000;SB=0;DP4=8,10,6,6
+NC_045512.2	22303	.	T	G	199	PASS	DP=51;AF=0.196078;SB=0;DP4=14,27,3,7
+NC_045512.2	23403	.	A	G	640	PASS	DP=39;AF=0.564103;SB=4;DP4=9,8,8,14
+NC_045512.2	25563	.	G	T	684	PASS	DP=42;AF=0.571429;SB=1;DP4=7,11,11,13
+NC_045512.2	26144	.	G	T	99	PASS	DP=18;AF=0.277778;SB=0;DP4=5,7,2,3

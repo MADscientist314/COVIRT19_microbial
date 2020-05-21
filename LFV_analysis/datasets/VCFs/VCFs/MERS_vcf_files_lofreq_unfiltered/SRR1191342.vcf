@@ -1,0 +1,28 @@
+##fileformat=VCFv4.0
+##fileDate=20200510
+##source=lofreq call --call-indels -f MERS.fasta --no-default-filter -r NC_019843.3:1-235 -o /tmp/lofreq2_call_parallelr2f20jw5/0.vcf.gz output_MERS/bam_files/SRR1191342_sort.bam 
+##reference=MERS.fasta
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw Depth">
+##INFO=<ID=AF,Number=1,Type=Float,Description="Allele Frequency">
+##INFO=<ID=SB,Number=1,Type=Integer,Description="Phred-scaled strand bias at this position">
+##INFO=<ID=DP4,Number=4,Type=Integer,Description="Counts for ref-forward bases, ref-reverse, alt-forward and alt-reverse bases">
+##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
+##INFO=<ID=CONSVAR,Number=0,Type=Flag,Description="Indicates that the variant is a consensus variant (as opposed to a low frequency variant).">
+##INFO=<ID=HRUN,Number=1,Type=Integer,Description="Homopolymer length to the right of report indel position">
+##FILTER=<ID=min_snvqual_38,Description="Minimum SNV Quality (Phred) 38">
+##FILTER=<ID=min_indelqual_20,Description="Minimum Indel Quality (Phred) 20">
+##FILTER=<ID=min_dp_10,Description="Minimum Coverage 10">
+##FILTER=<ID=sb_fdr,Description="Strand-Bias Multiple Testing Correction: fdr corr. pvalue > 0.001000">
+##FILTER=<ID=min_snvqual_59,Description="Minimum SNV Quality (Phred) 59">
+##FILTER=<ID=min_indelqual_40,Description="Minimum Indel Quality (Phred) 40">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NC_019843.3	19468	.	A	C	141	PASS	DP=18;AF=0.277778;SB=0;DP4=8,5,3,2
+NC_019843.3	24059	.	C	T	1435	PASS	DP=42;AF=0.976190;SB=0;DP4=1,0,24,17
+NC_019843.3	24499	.	C	A	1359	PASS	DP=51;AF=0.803922;SB=0;DP4=4,6,18,23
+NC_019843.3	24538	.	A	G	133	PASS	DP=54;AF=0.129630;SB=3;DP4=27,19,3,4
+NC_019843.3	26455	.	C	T	121	PASS	DP=222;AF=0.040541;SB=3;DP4=82,128,2,7
+NC_019843.3	27162	.	G	A	5461	PASS	DP=186;AF=0.854839;SB=0;DP4=9,12,66,93
+NC_019843.3	27860	.	A	T	277	PASS	DP=311;AF=0.054662;SB=0;DP4=136,154,9,8
+NC_019843.3	28017	.	C	T	165	PASS	DP=348;AF=0.037356;SB=3;DP4=181,145,9,4
+NC_019843.3	28655	.	T	A	564	PASS	DP=1122;AF=0.043672;SB=0;DP4=401,637,19,30
+NC_019843.3	28682	.	C	T	269	PASS	DP=984;AF=0.030488;SB=0;DP4=482,452,16,14
